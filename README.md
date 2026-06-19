@@ -82,4 +82,4 @@ Successful login returns a JWT token.
 
 ## Author
 
-Sthitu
+Sthiti
