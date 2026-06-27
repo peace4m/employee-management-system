@@ -1,22 +1,31 @@
 package com.company.ems.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data; // Ensure you have this import
 
 @Entity
 @Table(name = "employees")
-@Getter @Setter
-public class Employee extends BaseEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    @Column(unique = true, nullable = false)
-    private String email;
-    @Column(nullable = false)
-    private String password;
+@Data
+public class Employee {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String email;
+    private String role;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
+
+    @ManyToOne
+    @JoinColumn(name = "designation_id")
+    private Designation designation;
+
+    @ManyToOne
     @JoinColumn(name = "manager_id")
-    private Employee reportingManager;
+    private Employee manager;
+
 }

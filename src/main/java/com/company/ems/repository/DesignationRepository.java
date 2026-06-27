@@ -1,9 +1,9 @@
 package com.company.ems.repository;
 
-import com.company.ems.entity.Department;
+import com.company.ems.entity.Designation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DepartmentRepository extends JpaRepository<Department, Long> {
+public interface DesignationRepository extends JpaRepository<Designation, Long> {
 }

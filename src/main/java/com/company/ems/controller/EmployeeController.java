@@ -2,9 +2,11 @@ package com.company.ems.controller;
 
 import com.company.ems.dto.EmployeeDto;
 import com.company.ems.service.EmployeeService; // Make sure this exists
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -32,5 +34,10 @@ public class EmployeeController {
     @GetMapping
     public ResponseEntity<Page<EmployeeDto>> getAll(Pageable pageable, @RequestParam(required = false) String name) {
         return ResponseEntity.ok(employeeService.findAllEmployees(name, pageable));
+    }
+
+    @PostMapping
+    public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
+        return new ResponseEntity<>(employeeService.createEmployee(employeeDto), HttpStatus.CREATED);
     }
 }
