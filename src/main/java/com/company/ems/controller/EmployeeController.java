@@ -1,5 +1,6 @@
 package com.company.ems.controller;
 
+import com.company.ems.dto.ApiResponse;
 import com.company.ems.dto.EmployeeDto;
 import com.company.ems.service.EmployeeService; // Make sure this exists
 import jakarta.validation.Valid;
@@ -17,27 +18,38 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    // Constructor Injection (best practice)
     @Autowired
     public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
 
+    // CREATE
+    @PostMapping
+    public ResponseEntity<ApiResponse> createEmployee(@RequestBody EmployeeDto dto) {
+        employeeService.createEmployee(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(true, "Employee created successfully"));
+    }
+
+    // READ
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR')")
+    @GetMapping("/{id}")
+    public ResponseEntity<EmployeeDto> getEmployee(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.getEmployeeById(id));
+    }
+
+    // UPDATE
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDto dto) {
+        employeeService.updateEmployee(id, dto);
+        return ResponseEntity.ok(new ApiResponse(true, "Employee updated successfully"));
+    }
+
+    // DELETE
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'HR')")
-    @GetMapping
-    public ResponseEntity<Page<EmployeeDto>> getAll(Pageable pageable, @RequestParam(required = false) String name) {
-        return ResponseEntity.ok(employeeService.findAllEmployees(name, pageable));
-    }
-
-    @PostMapping
-    public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
-        return new ResponseEntity<>(employeeService.createEmployee(employeeDto), HttpStatus.CREATED);
+        return ResponseEntity.ok(new ApiResponse(true, "Employee deleted successfully"));
     }
 }
